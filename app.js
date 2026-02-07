@@ -156,6 +156,9 @@ const updateSliderValue = (key, value) => {
     dialValueNodes.fan.textContent = value;
   }
   renderTelemetry();
+  if (key === "power" || key === "boost" || key === "fan1") {
+    updateDial("temp", getSimulatedTemp());
+  }
 };
 
 const updateDial = (key, value) => {
@@ -173,11 +176,19 @@ const updateDial = (key, value) => {
   }
 };
 
+const getSimulatedTemp = () => {
+  const powerHeat = (state.sliders.power - 100) * 0.25;
+  const boostHeat = (state.sliders.boost - 1630) * 0.015;
+  const fanCooling = Math.max(0, (state.sliders.fan1 - 50) * 0.12);
+  const baseTemp = 36;
+  return Math.max(28, Math.min(88, baseTemp + powerHeat + boostHeat - fanCooling));
+};
+
 const tickDials = () => {
   Object.entries(dialTargets).forEach(([key, target]) => {
     const jitter = Math.round((Math.random() - 0.5) * 6);
-    const value = Math.max(0, target.value + jitter);
-    updateDial(key, value);
+    const value = key === "temp" ? getSimulatedTemp() + jitter * 0.2 : Math.max(0, target.value + jitter);
+    updateDial(key, Math.round(value));
   });
 };
 
