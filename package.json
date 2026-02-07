@@ -1,0 +1,14 @@
+{
+  "name": "deadpool-gpu-tweak",
+  "version": "0.1.0",
+  "description": "GPU Tweak-style performance console prototype",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "package:win": "electron-packager . DeadpoolTweak --platform=win32 --arch=x64 --out=dist --overwrite"
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-packager": "^17.1.2"
+  }
+}
