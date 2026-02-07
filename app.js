@@ -68,6 +68,7 @@ const latencyNode = document.querySelector("[data-latency]");
 const toast = document.querySelector("[data-toast]");
 const logList = document.querySelector("[data-log]");
 const updateStatus = document.querySelector("[data-update]");
+const navItems = document.querySelectorAll("[data-nav]");
 
 const dialNodes = Array.from(document.querySelectorAll("[data-dial]")).reduce((acc, node) => {
   acc[node.dataset.dial] = node;
@@ -241,6 +242,16 @@ document.querySelectorAll("[data-toggle]").forEach((button) => {
   if (state.toggles[key]) {
     button.classList.add("active");
   }
+});
+
+navItems.forEach((button) => {
+  button.addEventListener("click", () => {
+    navItems.forEach((item) => item.classList.remove("active"));
+    button.classList.add("active");
+    const label = button.textContent.trim();
+    logAction(`Switched to ${label}.`);
+    showToast(`${label} view ready.`);
+  });
 });
 
 document.querySelectorAll("[data-action]").forEach((button) => {
