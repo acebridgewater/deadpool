@@ -1,6 +1,19 @@
 # Deadpool
 
-Modern UI mock for a Fortnite performance tweaker dashboard. Open `index.html` in a browser to view the neon, glassmorphism style inspired by the provided reference.
+GPU Tweak‑style performance console prototype. This is a **fully runnable front‑end** (HTML/CSS/JS) that simulates profile switching, dials, and sliders in the browser.
+
+## Run it
+You can run it locally in two ways:
+
+### Option 1: Open directly
+1. Download or clone this repo.
+2. Double‑click `index.html`.
+
+### Option 2: Local web server (recommended)
+```bash
+python -m http.server 8000
+```
+Then open: `http://localhost:8000/index.html`
 
 ## Are there more tweaks for max FPS?
 Yes—there are **more potential settings** than the 38 bullet‑point items I listed earlier. That number was just a **starter checklist**, not a hard limit. The real number varies based on your **hardware, drivers, Windows build, BIOS options, and Fortnite renderer**. Instead of stacking hundreds of tweaks, the best results usually come from:
