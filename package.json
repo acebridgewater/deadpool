@@ -1,0 +1,44 @@
+{
+  "name": "deadpool-gpu-tweak",
+  "version": "0.1.0",
+  "description": "GPU Tweak-style performance console prototype",
+  "author": "Deadpool Tweak Team",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "package:win": "electron-packager . DeadpoolTweak --platform=win32 --arch=x64 --out=dist --overwrite",
+    "build:win": "electron-builder --win --x64",
+    "dist:win": "electron-builder --win --x64",
+    "oneclick:win": "npm install && npm run dist:win"
+  },
+  "build": {
+    "appId": "com.deadpool.tweak",
+    "productName": "Deadpool Tweak",
+    "asar": true,
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "index.html",
+      "styles.css",
+      "app.js",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3",
+    "electron-packager": "^17.1.2"
+  },
+  "dependencies": {
+    "electron-updater": "^6.1.8"
+  }
+}
