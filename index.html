@@ -14,33 +14,33 @@
           <h1>Tweak III <span>Beta</span></h1>
           <p class="subtitle">Fortnite performance console for zero‑stutter tuning, telemetry, and quick presets.</p>
           <div class="hero-actions">
-            <button class="btn primary">Boost Profile</button>
-            <button class="btn ghost">Create Preset</button>
+            <button class="btn primary" data-action="boost">Boost Profile</button>
+            <button class="btn ghost" data-action="create">Create Preset</button>
           </div>
         </div>
         <div class="hero-card">
           <div class="status">
             <div>
               <h4>System</h4>
-              <p>Latency 8.1ms · 1% Low +14%</p>
+              <p><span data-latency>8.1ms</span> latency · <span data-boost>+14%</span> 1% low</p>
             </div>
-            <span class="pill">Balanced</span>
+            <span class="pill" data-active-profile>Balanced</span>
           </div>
           <div class="meters">
             <div class="meter">
               <span>CPU</span>
-              <strong>34%</strong>
-              <div class="bar"><div style="width: 34%"></div></div>
+              <strong data-meter="cpu">34%</strong>
+              <div class="bar"><div data-bar="cpu" style="width: 34%"></div></div>
             </div>
             <div class="meter">
               <span>GPU</span>
-              <strong>62%</strong>
-              <div class="bar"><div style="width: 62%"></div></div>
+              <strong data-meter="gpu">62%</strong>
+              <div class="bar"><div data-bar="gpu" style="width: 62%"></div></div>
             </div>
             <div class="meter">
               <span>RAM</span>
-              <strong>12.8GB</strong>
-              <div class="bar"><div style="width: 48%"></div></div>
+              <strong data-meter="ram">12.8GB</strong>
+              <div class="bar"><div data-bar="ram" style="width: 48%"></div></div>
             </div>
           </div>
         </div>
@@ -50,21 +50,21 @@
         <section class="panel">
           <h3>Profiles</h3>
           <ul class="list">
-            <li><span>Competitive</span><button class="chip">Apply</button></li>
-            <li><span>Low Input Delay</span><button class="chip">Apply</button></li>
-            <li><span>Streaming Mode</span><button class="chip">Apply</button></li>
-            <li><span>Creative Build</span><button class="chip">Apply</button></li>
+            <li><span>Competitive</span><button class="chip" data-profile-button="competitive">Apply</button></li>
+            <li><span>Low Input Delay</span><button class="chip" data-profile-button="low-latency">Apply</button></li>
+            <li><span>Streaming Mode</span><button class="chip" data-profile-button="streaming">Apply</button></li>
+            <li><span>Creative Build</span><button class="chip" data-profile-button="creative">Apply</button></li>
           </ul>
         </section>
 
         <section class="panel">
           <h3>Live Tweaks</h3>
           <div class="toggles">
-            <label class="toggle"><input type="checkbox" checked /><span>Game Mode</span></label>
-            <label class="toggle"><input type="checkbox" checked /><span>HAGS</span></label>
-            <label class="toggle"><input type="checkbox" /><span>Background Services</span></label>
-            <label class="toggle"><input type="checkbox" checked /><span>Shader Cache</span></label>
-            <label class="toggle"><input type="checkbox" /><span>Overclock Guard</span></label>
+            <label class="toggle"><input type="checkbox" checked data-toggle="game-mode" /><span>Game Mode</span></label>
+            <label class="toggle"><input type="checkbox" checked data-toggle="hags" /><span>HAGS</span></label>
+            <label class="toggle"><input type="checkbox" data-toggle="background" /><span>Background Services</span></label>
+            <label class="toggle"><input type="checkbox" checked data-toggle="shader-cache" /><span>Shader Cache</span></label>
+            <label class="toggle"><input type="checkbox" data-toggle="overclock-guard" /><span>Overclock Guard</span></label>
           </div>
         </section>
 
@@ -73,19 +73,19 @@
           <div class="telemetry">
             <div>
               <p>Average FPS</p>
-              <h2>263</h2>
+              <h2 data-telemetry="fps">263</h2>
             </div>
             <div>
               <p>1% Low</p>
-              <h2>191</h2>
+              <h2 data-telemetry="low">191</h2>
             </div>
             <div>
               <p>Frame Time</p>
-              <h2>4.9ms</h2>
+              <h2 data-telemetry="frametime">4.9ms</h2>
             </div>
             <div>
               <p>Input Delay</p>
-              <h2>8.1ms</h2>
+              <h2 data-telemetry="latency">8.1ms</h2>
             </div>
           </div>
         </section>
@@ -93,18 +93,27 @@
         <section class="panel">
           <h3>Quick Actions</h3>
           <div class="actions">
-            <button class="btn ghost">Backup Registry</button>
-            <button class="btn ghost">Restore Defaults</button>
-            <button class="btn ghost">Export Report</button>
+            <button class="btn ghost" data-action="backup">Backup Registry</button>
+            <button class="btn ghost" data-action="restore">Restore Defaults</button>
+            <button class="btn ghost" data-action="export">Export Report</button>
           </div>
         </section>
 
         <section class="panel">
           <h3>Update Center</h3>
-          <p>Driver pack, Fortnite presets, and OS scripts are up to date.</p>
-          <button class="btn primary">Check Updates</button>
+          <p data-update>Status: Driver pack, Fortnite presets, and OS scripts are up to date.</p>
+          <button class="btn primary" data-action="updates">Check Updates</button>
+        </section>
+
+        <section class="panel wide">
+          <h3>Activity Log</h3>
+          <ul class="log" data-log>
+            <li class="log-item">System ready. Waiting for commands.</li>
+          </ul>
         </section>
       </main>
     </div>
+    <div class="toast" aria-live="polite" aria-atomic="true" data-toast hidden></div>
+    <script src="app.js"></script>
   </body>
 </html>
