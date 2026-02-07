@@ -3,116 +3,216 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tweak III Beta - Fortnite Performance Suite</title>
+    <title>GPU Tweak III - Performance Console</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="page">
-      <header class="hero">
-        <div class="title-wrap">
-          <p class="eyebrow">Sapphire OS 25H3</p>
-          <h1>Tweak III <span>Beta</span></h1>
-          <p class="subtitle">Fortnite performance console for zero‑stutter tuning, telemetry, and quick presets.</p>
-          <div class="hero-actions">
-            <button class="btn primary" data-action="boost">Boost Profile</button>
-            <button class="btn ghost" data-action="create">Create Preset</button>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="logo-mark">ROG</div>
+          <div>
+            <p>GPU Tweak III</p>
+            <span>Performance Suite</span>
           </div>
         </div>
-        <div class="hero-card">
-          <div class="status">
-            <div>
-              <h4>System</h4>
-              <p><span data-latency>8.1ms</span> latency · <span data-boost>+14%</span> 1% low</p>
-            </div>
-            <span class="pill" data-active-profile>Balanced</span>
-          </div>
-          <div class="meters">
-            <div class="meter">
-              <span>CPU</span>
-              <strong data-meter="cpu">34%</strong>
-              <div class="bar"><div data-bar="cpu" style="width: 34%"></div></div>
-            </div>
-            <div class="meter">
-              <span>GPU</span>
-              <strong data-meter="gpu">62%</strong>
-              <div class="bar"><div data-bar="gpu" style="width: 62%"></div></div>
-            </div>
-            <div class="meter">
-              <span>RAM</span>
-              <strong data-meter="ram">12.8GB</strong>
-              <div class="bar"><div data-bar="ram" style="width: 48%"></div></div>
-            </div>
-          </div>
+        <nav class="nav">
+          <button class="nav-item active" data-nav="dashboard">Dashboard</button>
+          <button class="nav-item" data-nav="monitor">Monitoring</button>
+          <button class="nav-item" data-nav="profiles">Profiles</button>
+          <button class="nav-item" data-nav="tools">Tools</button>
+        </nav>
+        <div class="sidebar-footer">
+          <p>v1.2.3.4</p>
+          <button class="btn ghost" data-action="export">Export Report</button>
         </div>
-      </header>
+      </aside>
 
-      <main class="grid">
-        <section class="panel">
-          <h3>Profiles</h3>
-          <ul class="list">
-            <li><span>Competitive</span><button class="chip" data-profile-button="competitive">Apply</button></li>
-            <li><span>Low Input Delay</span><button class="chip" data-profile-button="low-latency">Apply</button></li>
-            <li><span>Streaming Mode</span><button class="chip" data-profile-button="streaming">Apply</button></li>
-            <li><span>Creative Build</span><button class="chip" data-profile-button="creative">Apply</button></li>
-          </ul>
-        </section>
+      <main class="console">
+        <header class="topbar">
+          <div class="mode-tabs">
+            <button class="tab active" data-profile-button="default">Default Mode</button>
+            <button class="tab" data-profile-button="oc">OC Mode</button>
+            <button class="tab" data-profile-button="silent">Silent Mode</button>
+            <button class="tab" data-profile-button="rog">ROG Mode</button>
+          </div>
+          <div class="topbar-actions">
+            <button class="icon-btn" data-action="boost" aria-label="Boost">⚡</button>
+            <button class="icon-btn" data-action="updates" aria-label="Scan">⟳</button>
+            <button class="icon-btn" data-action="restore" aria-label="Reset">⟲</button>
+          </div>
+        </header>
 
-        <section class="panel">
-          <h3>Live Tweaks</h3>
-          <div class="toggles">
-            <label class="toggle"><input type="checkbox" checked data-toggle="game-mode" /><span>Game Mode</span></label>
-            <label class="toggle"><input type="checkbox" checked data-toggle="hags" /><span>HAGS</span></label>
-            <label class="toggle"><input type="checkbox" data-toggle="background" /><span>Background Services</span></label>
-            <label class="toggle"><input type="checkbox" checked data-toggle="shader-cache" /><span>Shader Cache</span></label>
-            <label class="toggle"><input type="checkbox" data-toggle="overclock-guard" /><span>Overclock Guard</span></label>
+        <section class="dial-row">
+          <div class="dial-card">
+            <div class="dial" data-dial="temp">
+              <div class="dial-value"><span data-dial-value="temp">36</span>°C</div>
+            </div>
+            <p>GPU Temp</p>
+            <span class="dial-meta">Target <span data-dial-meta="temp">83</span>°</span>
+          </div>
+          <div class="dial-card">
+            <div class="dial" data-dial="clock">
+              <div class="dial-value"><span data-dial-value="clock">210</span> MHz</div>
+            </div>
+            <p>GPU Clock</p>
+            <span class="dial-meta">Boost <span data-dial-meta="clock">1830</span> MHz</span>
+          </div>
+          <div class="dial-card">
+            <div class="dial" data-dial="power">
+              <div class="dial-value"><span data-dial-value="power">11</span>%</div>
+            </div>
+            <p>GPU Power</p>
+            <span class="dial-meta">Limit <span data-dial-meta="power">100</span>%</span>
+          </div>
+          <div class="dial-card">
+            <div class="dial" data-dial="fan">
+              <div class="dial-value"><span data-dial-value="fan">0</span>%</div>
+            </div>
+            <p>Fan Speed</p>
+            <span class="dial-meta">Target <span data-dial-meta="fan">70</span>%</span>
+          </div>
+          <div class="dial-card">
+            <div class="dial" data-dial="mem">
+              <div class="dial-value"><span data-dial-value="mem">0</span>%</div>
+            </div>
+            <p>Memory</p>
+            <span class="dial-meta">Offset <span data-dial-meta="mem">+300</span> MHz</span>
           </div>
         </section>
 
-        <section class="panel wide">
-          <h3>Telemetry</h3>
-          <div class="telemetry">
-            <div>
-              <p>Average FPS</p>
-              <h2 data-telemetry="fps">263</h2>
+        <section class="panel-grid">
+          <div class="panel column">
+            <h3>Power</h3>
+            <div class="slider">
+              <div class="slider-head">
+                <span>Power Target</span>
+                <strong data-slider-value="power">100%</strong>
+              </div>
+              <input type="range" min="70" max="125" value="100" data-slider="power" />
+              <div class="slider-meta">
+                <span>70%</span>
+                <span>125%</span>
+              </div>
             </div>
-            <div>
-              <p>1% Low</p>
-              <h2 data-telemetry="low">191</h2>
+            <div class="slider">
+              <div class="slider-head">
+                <span>GPU Voltage</span>
+                <strong data-slider-value="voltage">1100 mV</strong>
+              </div>
+              <input type="range" min="900" max="1200" value="1100" data-slider="voltage" />
+              <div class="slider-meta">
+                <span>900</span>
+                <span>1200</span>
+              </div>
             </div>
-            <div>
-              <p>Frame Time</p>
-              <h2 data-telemetry="frametime">4.9ms</h2>
+          </div>
+
+          <div class="panel column">
+            <h3>Clock</h3>
+            <div class="slider">
+              <div class="slider-head">
+                <span>GPU Boost Clock</span>
+                <strong data-slider-value="boost">1630 MHz</strong>
+              </div>
+              <input type="range" min="1500" max="1900" value="1630" data-slider="boost" />
+              <div class="slider-meta">
+                <span>1500</span>
+                <span>1900</span>
+              </div>
             </div>
-            <div>
-              <p>Input Delay</p>
-              <h2 data-telemetry="latency">8.1ms</h2>
+            <div class="slider">
+              <div class="slider-head">
+                <span>Memory Clock</span>
+                <strong data-slider-value="memory">19402 MHz</strong>
+              </div>
+              <input type="range" min="17000" max="21000" value="19402" data-slider="memory" />
+              <div class="slider-meta">
+                <span>17000</span>
+                <span>21000</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel column">
+            <h3>Fan</h3>
+            <div class="fan-row">
+              <div class="fan-control">
+                <div class="fan-head">
+                  <span>GPU Fan Speed</span>
+                  <strong data-slider-value="fan1">100%</strong>
+                </div>
+                <input type="range" min="0" max="100" value="100" data-slider="fan1" />
+              </div>
+              <button class="chip" data-toggle="fan-auto">Auto</button>
+            </div>
+            <div class="fan-row">
+              <div class="fan-control">
+                <div class="fan-head">
+                  <span>GPU Fan2 Speed</span>
+                  <strong data-slider-value="fan2">100%</strong>
+                </div>
+                <input type="range" min="0" max="100" value="100" data-slider="fan2" />
+              </div>
+              <button class="chip" data-toggle="fan2-auto">Auto</button>
+            </div>
+            <div class="fan-actions">
+              <button class="btn primary" data-action="boost">OC Scanner</button>
+              <button class="btn ghost" data-action="backup">Default</button>
             </div>
           </div>
         </section>
 
-        <section class="panel">
-          <h3>Quick Actions</h3>
-          <div class="actions">
-            <button class="btn ghost" data-action="backup">Backup Registry</button>
-            <button class="btn ghost" data-action="restore">Restore Defaults</button>
-            <button class="btn ghost" data-action="export">Export Report</button>
+        <section class="bottom-row">
+          <div class="panel telemetry-panel">
+            <h3>Telemetry</h3>
+            <div class="telemetry-grid">
+              <div>
+                <p>Average FPS</p>
+                <h2 data-telemetry="fps">263</h2>
+              </div>
+              <div>
+                <p>1% Low</p>
+                <h2 data-telemetry="low">191</h2>
+              </div>
+              <div>
+                <p>Frame Time</p>
+                <h2 data-telemetry="frametime">4.9ms</h2>
+              </div>
+              <div>
+                <p>Input Delay</p>
+                <h2 data-telemetry="latency">8.1ms</h2>
+              </div>
+            </div>
           </div>
-        </section>
 
-        <section class="panel">
-          <h3>Update Center</h3>
-          <p data-update>Status: Driver pack, Fortnite presets, and OS scripts are up to date.</p>
-          <button class="btn primary" data-action="updates">Check Updates</button>
-        </section>
+          <div class="panel activity-panel">
+            <h3>Activity Log</h3>
+            <ul class="log" data-log>
+              <li class="log-item">Console ready. Select a mode to begin.</li>
+            </ul>
+          </div>
 
-        <section class="panel wide">
-          <h3>Activity Log</h3>
-          <ul class="log" data-log>
-            <li class="log-item">System ready. Waiting for commands.</li>
-          </ul>
+          <div class="panel status-panel">
+            <h3>Status</h3>
+            <div class="status-line">
+              <span>Profile</span>
+              <strong data-active-profile>Default Mode</strong>
+            </div>
+            <div class="status-line">
+              <span>Latency</span>
+              <strong data-latency>8.1ms</strong>
+            </div>
+            <div class="status-line">
+              <span>1% Low Boost</span>
+              <strong data-boost>+14%</strong>
+            </div>
+            <p class="status-note" data-update>Status: All drivers and presets are up to date.</p>
+          </div>
         </section>
       </main>
     </div>
+
     <div class="toast" aria-live="polite" aria-atomic="true" data-toast hidden></div>
     <script src="app.js"></script>
   </body>

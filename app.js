@@ -6,55 +6,58 @@ const telemetryBase = {
 };
 
 const profiles = {
-  balanced: {
-    label: "Balanced",
+  default: {
+    label: "Default Mode",
     boost: "+14%",
     telemetry: { fps: 263, low: 191, frametime: 4.9, latency: 8.1 },
   },
-  competitive: {
-    label: "Competitive",
-    boost: "+19%",
-    telemetry: { fps: 281, low: 204, frametime: 4.5, latency: 7.4 },
+  oc: {
+    label: "OC Mode",
+    boost: "+22%",
+    telemetry: { fps: 295, low: 210, frametime: 4.3, latency: 7.2 },
   },
-  "low-latency": {
-    label: "Low Input Delay",
-    boost: "+12%",
-    telemetry: { fps: 258, low: 188, frametime: 5.1, latency: 6.6 },
+  silent: {
+    label: "Silent Mode",
+    boost: "+6%",
+    telemetry: { fps: 236, low: 176, frametime: 5.8, latency: 9.6 },
   },
-  streaming: {
-    label: "Streaming Mode",
-    boost: "+8%",
-    telemetry: { fps: 240, low: 176, frametime: 5.7, latency: 9.2 },
-  },
-  creative: {
-    label: "Creative Build",
-    boost: "+15%",
-    telemetry: { fps: 268, low: 196, frametime: 4.7, latency: 7.9 },
+  rog: {
+    label: "ROG Mode",
+    boost: "+18%",
+    telemetry: { fps: 284, low: 204, frametime: 4.6, latency: 7.8 },
   },
 };
 
-const toggleImpacts = {
-  "game-mode": { fps: 4, low: 3, latency: -0.2 },
-  hags: { fps: 3, low: 2, latency: -0.1 },
-  background: { fps: -5, low: -6, latency: 0.3 },
-  "shader-cache": { fps: 2, low: 4, latency: -0.2 },
-  "overclock-guard": { fps: -3, low: -2, latency: 0.4 },
+const sliderConfig = {
+  power: { unit: "%", min: 70, max: 125, dial: "power" },
+  voltage: { unit: " mV", min: 900, max: 1200 },
+  boost: { unit: " MHz", min: 1500, max: 1900, dial: "clock" },
+  memory: { unit: " MHz", min: 17000, max: 21000, dial: "mem" },
+  fan1: { unit: "%", min: 0, max: 100, dial: "fan" },
+  fan2: { unit: "%", min: 0, max: 100 },
 };
 
-const meterRanges = {
-  cpu: { min: 26, max: 64 },
-  gpu: { min: 42, max: 92 },
-  ram: { min: 38, max: 72 },
+const dialTargets = {
+  temp: { max: 90, value: 36, meta: 83 },
+  clock: { max: 2000, value: 210, meta: 1830 },
+  power: { max: 125, value: 11, meta: 100 },
+  fan: { max: 100, value: 0, meta: 70 },
+  mem: { max: 100, value: 0, meta: 300 },
 };
 
 const state = {
-  profile: "balanced",
+  profile: "default",
+  sliders: {
+    power: 100,
+    voltage: 1100,
+    boost: 1630,
+    memory: 19402,
+    fan1: 100,
+    fan2: 100,
+  },
   toggles: {
-    "game-mode": true,
-    hags: true,
-    background: false,
-    "shader-cache": true,
-    "overclock-guard": false,
+    "fan-auto": true,
+    "fan2-auto": true,
   },
 };
 
@@ -66,13 +69,18 @@ const toast = document.querySelector("[data-toast]");
 const logList = document.querySelector("[data-log]");
 const updateStatus = document.querySelector("[data-update]");
 
-const meters = Array.from(document.querySelectorAll("[data-meter]")).reduce((acc, node) => {
-  acc[node.dataset.meter] = node;
+const dialNodes = Array.from(document.querySelectorAll("[data-dial]")).reduce((acc, node) => {
+  acc[node.dataset.dial] = node;
   return acc;
 }, {});
 
-const bars = Array.from(document.querySelectorAll("[data-bar]")).reduce((acc, node) => {
-  acc[node.dataset.bar] = node;
+const dialValueNodes = Array.from(document.querySelectorAll("[data-dial-value]")).reduce((acc, node) => {
+  acc[node.dataset.dialValue] = node;
+  return acc;
+}, {});
+
+const dialMetaNodes = Array.from(document.querySelectorAll("[data-dial-meta]")).reduce((acc, node) => {
+  acc[node.dataset.dialMeta] = node;
   return acc;
 }, {});
 
@@ -106,18 +114,14 @@ const showToast = (message) => {
 const calculateTelemetry = () => {
   const base = profiles[state.profile]?.telemetry ?? telemetryBase;
   const output = { ...base };
+  const boostDelta = (state.sliders.boost - 1630) / 20;
+  const powerDelta = (state.sliders.power - 100) / 10;
+  const fanPenalty = state.sliders.fan1 < 40 ? 4 : 0;
 
-  Object.entries(state.toggles).forEach(([key, enabled]) => {
-    if (!enabled) return;
-    const impact = toggleImpacts[key];
-    if (!impact) return;
-    output.fps += impact.fps ?? 0;
-    output.low += impact.low ?? 0;
-    output.latency += impact.latency ?? 0;
-  });
-
-  output.frametime = Math.max(3.8, output.frametime + (263 - output.fps) * 0.012);
-  output.latency = Math.max(5.4, output.latency);
+  output.fps += boostDelta + powerDelta - fanPenalty;
+  output.low += boostDelta * 0.6 + powerDelta * 0.4 - fanPenalty * 0.4;
+  output.latency = Math.max(5.2, output.latency - boostDelta * 0.04 + fanPenalty * 0.05);
+  output.frametime = Math.max(3.6, output.frametime + (263 - output.fps) * 0.012);
   return output;
 };
 
@@ -138,32 +142,63 @@ const updateProfileUI = () => {
   renderTelemetry();
 };
 
-const randomBetween = (min, max) => Math.round(min + Math.random() * (max - min));
+const updateSliderValue = (key, value) => {
+  const output = document.querySelector(`[data-slider-value="${key}"]`);
+  const config = sliderConfig[key];
+  if (output && config) {
+    output.textContent = `${value}${config.unit}`;
+  }
+  if (config?.dial && dialValueNodes[config.dial]) {
+    dialValueNodes[config.dial].textContent = value;
+  }
+  if (key === "fan1") {
+    dialValueNodes.fan.textContent = value;
+  }
+  renderTelemetry();
+};
 
-const tickMeters = () => {
-  Object.entries(meterRanges).forEach(([key, range]) => {
-    const value = randomBetween(range.min, range.max);
-    if (!meters[key] || !bars[key]) return;
-    meters[key].textContent = key === "ram" ? `${(value / 5).toFixed(1)}GB` : `${value}%`;
-    bars[key].style.width = `${value}%`;
+const updateDial = (key, value) => {
+  const dial = dialNodes[key];
+  const target = dialTargets[key];
+  if (!dial || !target) return;
+  const progress = Math.min(1, value / target.max);
+  const degrees = progress * 280;
+  dial.style.background = `conic-gradient(var(--accent) ${degrees}deg, rgba(255, 255, 255, 0.1) 0deg)`;
+  if (dialValueNodes[key]) {
+    dialValueNodes[key].textContent = value;
+  }
+  if (dialMetaNodes[key]) {
+    dialMetaNodes[key].textContent = target.meta;
+  }
+};
+
+const tickDials = () => {
+  Object.entries(dialTargets).forEach(([key, target]) => {
+    const jitter = Math.round((Math.random() - 0.5) * 6);
+    const value = Math.max(0, target.value + jitter);
+    updateDial(key, value);
   });
 };
 
 const applyProfile = (profileKey) => {
   if (!profiles[profileKey]) return;
   state.profile = profileKey;
+  document.querySelectorAll(".tab").forEach((tab) => {
+    tab.classList.toggle("active", tab.dataset.profileButton === profileKey);
+  });
   updateProfileUI();
-  logAction(`Applied ${profiles[profileKey].label} profile.`);
-  showToast(`${profiles[profileKey].label} profile active.`);
+  logAction(`Applied ${profiles[profileKey].label}.`);
+  showToast(`${profiles[profileKey].label} active.`);
 };
 
-const toggleSetting = (toggleKey, enabled) => {
-  state.toggles[toggleKey] = enabled;
-  const status = enabled ? "enabled" : "disabled";
+const toggleSetting = (toggleKey, button) => {
+  const current = state.toggles[toggleKey];
+  const next = !current;
+  state.toggles[toggleKey] = next;
+  button.classList.toggle("active", next);
   const label = toggleKey.split("-").join(" ");
-  renderTelemetry();
-  logAction(`${label} ${status}.`);
-  showToast(`${label} ${status}.`);
+  logAction(`${label} ${next ? "enabled" : "disabled"}.`);
+  showToast(`${label} ${next ? "enabled" : "disabled"}.`);
 };
 
 const setUpdateStatus = (message) => {
@@ -176,51 +211,70 @@ document.querySelectorAll("[data-profile-button]").forEach((button) => {
   button.addEventListener("click", () => applyProfile(button.dataset.profileButton));
 });
 
-document.querySelectorAll("[data-toggle]").forEach((input) => {
-  input.addEventListener("change", (event) => {
-    toggleSetting(input.dataset.toggle, event.target.checked);
+document.querySelectorAll("[data-slider]").forEach((input) => {
+  input.addEventListener("input", () => {
+    const key = input.dataset.slider;
+    const value = Number(input.value);
+    state.sliders[key] = value;
+    updateSliderValue(key, value);
+    if (key === "power") {
+      updateDial("power", Math.round(value * 0.11));
+    }
+    if (key === "boost") {
+      updateDial("clock", Math.round(value / 8));
+    }
+    if (key === "fan1") {
+      updateDial("fan", value);
+    }
+    if (key === "memory") {
+      updateDial("mem", Math.round((value - 17000) / 40));
+    }
   });
+});
+
+document.querySelectorAll("[data-toggle]").forEach((button) => {
+  button.addEventListener("click", () => toggleSetting(button.dataset.toggle, button));
+});
+
+document.querySelectorAll("[data-toggle]").forEach((button) => {
+  const key = button.dataset.toggle;
+  if (state.toggles[key]) {
+    button.classList.add("active");
+  }
 });
 
 document.querySelectorAll("[data-action]").forEach((button) => {
   button.addEventListener("click", () => {
     const action = button.dataset.action;
     if (action === "boost") {
-      applyProfile("competitive");
-      return;
-    }
-    if (action === "create") {
-      showToast("Preset creator opened.");
-      logAction("Preset creator opened.");
+      applyProfile("oc");
       return;
     }
     if (action === "backup") {
-      showToast("Registry backup saved.");
-      logAction("Registry backup saved to Desktop.");
+      showToast("Defaults restored.");
+      logAction("Defaults restored to baseline.");
       return;
     }
     if (action === "restore") {
-      applyProfile("balanced");
-      logAction("Defaults restored.");
-      showToast("Defaults restored.");
+      applyProfile("default");
+      logAction("System reset to Default Mode.");
+      showToast("System reset.");
       return;
     }
     if (action === "export") {
-      showToast("Performance report exported.");
-      logAction("Performance report exported as tweak-report.json.");
+      showToast("Report exported.");
+      logAction("Performance report exported.");
       return;
     }
     if (action === "updates") {
       button.disabled = true;
-      button.textContent = "Scanning…";
-      setUpdateStatus("Checking for new driver packs and presets...");
+      setUpdateStatus("Checking for new driver packs and profiles...");
       logAction("Update scan started.");
       window.setTimeout(() => {
         button.disabled = false;
-        button.textContent = "Check Updates";
-        setUpdateStatus("Updates fetched. New Fortnite preset available.");
+        setUpdateStatus("New OC profile available. Ready to install.");
         showToast("Update scan complete.");
-        logAction("Update scan complete. 1 preset ready to install.");
+        logAction("Update scan complete. 1 profile ready.");
       }, 1400);
     }
   });
@@ -228,5 +282,5 @@ document.querySelectorAll("[data-action]").forEach((button) => {
 
 updateProfileUI();
 renderTelemetry();
-tickMeters();
-window.setInterval(tickMeters, 2400);
+tickDials();
+window.setInterval(tickDials, 2400);
